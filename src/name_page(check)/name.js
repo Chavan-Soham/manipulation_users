@@ -97,27 +97,32 @@ async function getJoinedTeams(){
             .from("team_members")
             .select("member_teamId")
             .eq("member_id", user_id)
-        
+        if (!data) {
+            console.log("id not found!")
+        }
         if (data) {
             const member_teamId = data.map(member_teamId=> member_teamId.member_teamId).join(",")
             if (member_teamId) {
                 console.log(member_teamId)
             }
-            else{
-                console.log("member team Id not found")
-            }
-            const getJoinedTeamName = await supabase
+            const { data: getJoinedTeamName, error: e} = await supabase
             .from("team_name")
             .select("team_name")
             .eq("team_id", member_teamId)
+        if (e) {
+            console.log(e);
+        }
+        if (getJoinedTeamName) {
+            const team_name = getJoinedTeamName.data.map(names => names.team_name).join(",")
+            setTeamNameJoined(team_name)
+            console.log(teamNameJoined)
+        }
+        if (!getJoinedTeamName) {
+            console.log("No team joined")
+        }
         
-        const team_name = getJoinedTeamName.data.map(names => names.team_name).join(",")
-        if (!team_name) {
-            console.log("team name not found")
         }
-        setTeamNameJoined(team_name)
-        console.log(teamNameJoined)
-        }
+        
         if (error) {
             console.log(error)
         }
