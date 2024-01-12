@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import supabase from "../supabaseClient";
 
 export function Main(){
@@ -15,6 +15,9 @@ export function Main(){
         if (!data) {
             console.log("team id not found")
         }
+        if (error) {
+            console.log(error)
+        }
 
         if(data){
             const team_id = data.map(team_id=>team_id.team_id).join(",")
@@ -28,8 +31,19 @@ export function Main(){
                     .eq("member_teamId", team_id)
                 if (member_names) {
                     setnames(member_names)
-                    console.log(member_names)
                 }
+                if (e) {
+                    console.log(e)
+                }
+            }
+        }
+    }
+
+    async function getUsers(){
+        for (const key in names) {
+            if (Object.hasOwnProperty.call(names, key)) {
+                const element = names[key];
+                console.log(element.member_name)
             }
         }
     }
@@ -38,6 +52,8 @@ export function Main(){
         <div>
             <h1>This is IfNotName data</h1>
             <h1>{getState}</h1>
+            <button onClick={getJoinedUsers}>Click to set users getJoinedUsers</button>
+            <button onClick={getUsers}>click to get users joined</button>
         </div>
     );
 }
